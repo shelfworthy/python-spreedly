@@ -35,7 +35,7 @@ class Client:
         import urllib2
 
         req = urllib2.Request(url=self.get_url())
-        req.add_header('User-agent', 'Shelfworthy 1.0')
+        req.add_header('User-agent', 'python-spreedly 1.0')
         req.add_header('Authorization', 'Basic %s' % self.auth)
 
         # Convert to POST if we got some data
