@@ -1,0 +1,1 @@
+an API for the spreedly subscription service

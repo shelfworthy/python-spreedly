@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-api.py
-
-Created by Michael Samoylov <mike@djangoware.com> on 2009-08-26.
-Copyright (c) 2009 Shelfworthy. All rights reserved.
-"""
 import httplib
 from datetime import datetime
 from decimal import Decimal
