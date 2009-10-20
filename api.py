@@ -105,7 +105,7 @@ class Client:
         tree = fromstring(self.get_response())
         for plan in tree.getiterator('subscriber'):
             data = {
-                'speedly_customer_id': int(plan.findtext('customer-id')),
+                'customer_id': int(plan.findtext('customer-id')),
                 'active': True if plan.findtext('active') == 'true' else False,
                 'trial_active': \
                     True if plan.findtext('on-trial') == 'true' else False,
@@ -163,7 +163,7 @@ class Client:
         tree = fromstring(self.get_response())
         for plan in tree.getiterator('subscriber'):
             data = {
-                'speedly_customer_id': int(plan.findtext('customer-id')),
+                'customer_id': int(plan.findtext('customer-id')),
                 'active': True if plan.findtext('active') == 'true' else False,
                 'trial_active': \
                     True if plan.findtext('on-trial') == 'true' else False,
@@ -208,3 +208,39 @@ class Client:
             return response.status
 
         return
+
+    def get_info(self, subscriber_id):
+        self.set_url('subscribers/%d.xml' % subscriber_id)
+        self.query('')
+
+        # Parse
+        result = []
+        tree = fromstring(self.get_response())
+        for plan in tree.getiterator('subscriber'):
+            data = {
+                'customer_id': int(plan.findtext('customer-id')),
+                'active': True if plan.findtext('active') == 'true' else False,
+                'trial_active': \
+                    True if plan.findtext('on-trial') == 'true' else False,
+                'trial_elegible': \
+                    True if plan.findtext('eligible-for-free-trial') == 'true' \
+                    else False,
+                'lifetime': \
+                    True if plan.findtext('lifetime-subscription') == 'true' \
+                    else False,
+                'token': plan.findtext('token'),
+                'plan': plan.findtext('subscription-plan-name'),
+                'date_created': datetime.strptime(
+                    plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
+                ),
+                'date_changed': datetime.strptime(
+                    plan.findtext('updated-at'), '%Y-%m-%dT%H:%M:%SZ'
+                ),
+                'date_expiration': datetime.strptime(
+                    plan.findtext('active-until'), '%Y-%m-%dT%H:%M:%SZ'
+                ) if plan.findtext('active-until') else None,
+            }
+
+            result.append(data)
+
+        return result[0]

@@ -31,7 +31,7 @@ class  TestCase(unittest.TestCase):
     def test_create_subscriber(self):
         keys = [
             'token', 'date_expiration', 'trial_active', 'date_created',
-            'active', 'lifetime', 'speedly_customer_id', 'date_changed',
+            'active', 'lifetime', 'customer_id', 'date_changed',
             'trial_elegible', 'plan'
         ]
 
@@ -44,7 +44,7 @@ class  TestCase(unittest.TestCase):
     def test_subscribe(self):
         keys = [
             'token', 'date_expiration', 'trial_active', 'date_created',
-            'active', 'lifetime', 'speedly_customer_id', 'date_changed',
+            'active', 'lifetime', 'customer_id', 'date_changed',
             'trial_elegible', 'plan'
         ]
 
@@ -62,6 +62,17 @@ class  TestCase(unittest.TestCase):
     def test_delete_subscriber(self):
         self.sclient.create_subscriber(1, 'test')
         self.failUnlessEqual(self.sclient.delete_subscriber(1), 200)
+
+    def test_get_info(self):
+        keys = [
+            'token', 'date_expiration', 'trial_active', 'date_created',
+            'active', 'lifetime', 'customer_id', 'date_changed',
+            'trial_elegible', 'plan'
+        ]
+
+        self.sclient.create_subscriber(1, 'test')
+        subscriber = self.sclient.get_info(1)
+        self.assertEquals(subscriber.keys(), keys)
 
 if __name__ == '__main__':
     unittest.main()
