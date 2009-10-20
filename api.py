@@ -1,48 +1,45 @@
-import httplib
+import httplib, urllib2
 from datetime import datetime
 from decimal import Decimal
 from xml.etree.ElementTree import fromstring
+from base64 import b64encode
 
 API_VERSION = 'v4'
 
 class Client:
     def __init__(self, token, site_name):
-        from base64 import b64encode
-
         self.auth = b64encode('%s:x' % token)
         self.base_host = 'spreedly.com'
         self.base_path = '/api/%s/%s' % (API_VERSION, site_name)
         self.base_url = 'https://%s%s' % (self.base_host, self.base_path)
         self.url = None
-
+    
     def get_response(self):
         return self.response
-
+    
     def get_url(self):
         return self.url
-
+    
     def set_url(self, url):
         self.url = '%s/%s' % (self.base_url, url)
-
+    
     def query(self, data=None):
-        import urllib2
-
         req = urllib2.Request(url=self.get_url())
         req.add_header('User-agent', 'python-spreedly 1.0')
         req.add_header('Authorization', 'Basic %s' % self.auth)
-
+        
         # Convert to POST if we got some data
         if data:
             req.add_header('Content-Type', 'application/xml')
             req.add_data(data)
-
+        
         f = urllib2.urlopen(req)
         self.response = f.read()
-
+    
     def get_plans(self):
         self.set_url('subscription_plans.xml')
         self.query()
-
+        
         # Parse
         result = []
         tree = fromstring(self.get_response())
@@ -74,11 +71,9 @@ class Client:
                     plan.findtext('updated-at'), '%Y-%m-%dT%H:%M:%SZ'
                 ),
             }
-
             result.append(data)
-
         return result
-
+    
     def create_subscriber(self, customer_id, screen_name):
         '''
         Creates a subscription
@@ -89,10 +84,10 @@ class Client:
             <screen-name>%s</screen-name>
         </subscriber>
         ''' % (customer_id, screen_name)
-
+        
         self.set_url('subscribers.xml')
         self.query(data)
-
+        
         # Parse
         result = []
         tree = fromstring(self.get_response())
@@ -120,11 +115,10 @@ class Client:
                     plan.findtext('active-until'), '%Y-%m-%dT%H:%M:%SZ'
                 ) if plan.findtext('active-until') else None,
             }
-
+            
             result.append(data)
-
         return result[0]
-
+    
     def delete_subscriber(self, id):
         if 'test' in self.base_path:
             headers = {'Authorization': 'Basic %s' % self.auth}
@@ -135,22 +129,20 @@ class Client:
                 headers
             )
             response = conn.getresponse()
-
             return response.status
-
         return
-
+    
     def subscribe(self, subscriber_id, plan_id, trial=False):
         '''
         Subscribe a user to some plan
         '''
         data = '<subscription_plan><id>%d</id></subscription_plan>' % plan_id
-
+        
         if trial:
             self.set_url('subscribers/%d/subscribe_to_free_trial.xml' % subscriber_id)
-
+        
         self.query(data)
-
+        
         # Parse
         result = []
         tree = fromstring(self.get_response())
@@ -178,12 +170,9 @@ class Client:
                     plan.findtext('active-until'), '%Y-%m-%dT%H:%M:%SZ'
                 ) if plan.findtext('active-until') else None,
             }
-
             result.append(data)
-
         return result[0]
-
-
+    
     def cleanup(self):
         '''
         Removes ALL subscribers. NEVER USE IN PRODUCTION!
@@ -197,15 +186,13 @@ class Client:
                 headers
             )
             response = conn.getresponse()
-
             return response.status
-
         return
-
+    
     def get_info(self, subscriber_id):
         self.set_url('subscribers/%d.xml' % subscriber_id)
         self.query('')
-
+        
         # Parse
         result = []
         tree = fromstring(self.get_response())
@@ -233,7 +220,5 @@ class Client:
                     plan.findtext('active-until'), '%Y-%m-%dT%H:%M:%SZ'
                 ) if plan.findtext('active-until') else None,
             }
-
             result.append(data)
-
         return result[0]
