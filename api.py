@@ -231,3 +231,11 @@ class Client:
             }
             result.append(data)
         return result[0]
+        
+    
+    def get_or_create_subscriber(self, subscriber_id, screen_name):
+        try:
+            return self.get_info(subscriber_id)
+        except urllib2.HTTPError, e:
+            if e.code == 404:
+                return self.create_subscriber(subscriber_id, screen_name)
