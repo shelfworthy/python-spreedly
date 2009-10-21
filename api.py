@@ -103,6 +103,9 @@ class Client:
                 'lifetime': \
                     True if plan.findtext('lifetime-subscription') == 'true' \
                     else False,
+                'card_expires_before_next_auto_renew': \
+                    True if plan.findtext('card-expires-before-next-auto-renew') == 'true' \
+                    else False,
                 'token': plan.findtext('token'),
                 'plan': plan.findtext('subscription-plan-name'),
                 'date_created': datetime.strptime(
@@ -158,6 +161,9 @@ class Client:
                 'lifetime': \
                     True if plan.findtext('lifetime-subscription') == 'true' \
                     else False,
+                'card_expires_before_next_auto_renew': \
+                    True if plan.findtext('card-expires-before-next-auto-renew') == 'true' \
+                    else False,
                 'token': plan.findtext('token'),
                 'plan': plan.findtext('subscription-plan-name'),
                 'date_created': datetime.strptime(
@@ -207,6 +213,9 @@ class Client:
                     else False,
                 'lifetime': \
                     True if plan.findtext('lifetime-subscription') == 'true' \
+                    else False,
+                'card_expires_before_next_auto_renew': \
+                    True if plan.findtext('card-expires-before-next-auto-renew') == 'true' \
                     else False,
                 'token': plan.findtext('token'),
                 'plan': plan.findtext('subscription-plan-name'),
