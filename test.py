@@ -21,7 +21,7 @@ class  TestCase(unittest.TestCase):
         keys = [
             'date_changed', 'terms', 'name', 'force_recurring', 'feature_level',
             'price', 'enabled', 'plan_type', 'force_renew', 'duration_units',
-            'version', 'speedly_site_id', 'duration', 'date_created',
+            'version', 'speedly_site_id', 'duration', 'created_at',
             'speedly_id', 'return_url', 'description'
         ]
 
@@ -30,7 +30,7 @@ class  TestCase(unittest.TestCase):
 
     def test_create_subscriber(self):
         keys = set([
-            'token', 'date_expiration', 'trial_active', 'date_created',
+            'token', 'active_until', 'trial_active', 'created_at',
             'active', 'lifetime', 'customer_id', 'date_changed',
             'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
         ])
@@ -43,7 +43,7 @@ class  TestCase(unittest.TestCase):
 
     def test_subscribe(self):
         keys = set([
-            'token', 'date_expiration', 'trial_active', 'date_created',
+            'token', 'active_until', 'trial_active', 'created_at',
             'active', 'lifetime', 'customer_id', 'date_changed',
             'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
         ])
@@ -65,7 +65,7 @@ class  TestCase(unittest.TestCase):
 
     def test_get_info(self):
         keys = set([
-            'token', 'date_expiration', 'trial_active', 'date_created',
+            'token', 'active_until', 'trial_active', 'created_at',
             'active', 'lifetime', 'customer_id', 'date_changed',
             'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
         ])
@@ -76,7 +76,7 @@ class  TestCase(unittest.TestCase):
         
     def test_get_or_create(self):
         keys = set([
-            'token', 'date_expiration', 'trial_active', 'date_created',
+            'token', 'active_until', 'trial_active', 'created_at',
             'active', 'lifetime', 'customer_id', 'date_changed',
             'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
         ])
