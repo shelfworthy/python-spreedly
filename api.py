@@ -112,7 +112,7 @@ class Client:
                     True if plan.findtext('card-expires-before-next-auto-renew') == 'true' \
                     else False,
                 'token': plan.findtext('token'),
-                'plan_name': plan.findtext('subscription-plan-name'),
+                'name': plan.findtext('subscription-plan-name'),
                 'feature_level': plan.findtext('feature-level'),
                 'created_at': datetime.strptime(
                     plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
@@ -176,7 +176,7 @@ class Client:
                     True if plan.findtext('card-expires-before-next-auto-renew') == 'true' \
                     else False,
                 'token': plan.findtext('token'),
-                'plan_name': plan.findtext('subscription-plan-name'),
+                'name': plan.findtext('subscription-plan-name'),
                 'feature_level': plan.findtext('feature-level'),
                 'created_at': datetime.strptime(
                     plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
@@ -235,7 +235,7 @@ class Client:
                     True if plan.findtext('card-expires-before-next-auto-renew') == 'true' \
                     else False,
                 'token': plan.findtext('token'),
-                'plan_name': plan.findtext('subscription-plan-name'),
+                'name': plan.findtext('subscription-plan-name'),
                 'feature_level': plan.findtext('feature-level'),
                 'created_at': datetime.strptime(
                     plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
