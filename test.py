@@ -21,7 +21,7 @@ class  TestCase(unittest.TestCase):
         keys = [
             'date_changed', 'terms', 'name', 'force_recurring', 'feature_level',
             'price', 'enabled', 'plan_type', 'force_renew', 'duration_units',
-            'version', 'speedly_site_id', 'duration', 'date_created',
+            'version', 'speedly_site_id', 'duration', 'created_at',
             'speedly_id', 'return_url', 'description'
         ]
 
@@ -29,31 +29,31 @@ class  TestCase(unittest.TestCase):
             self.assertEquals(plan.keys(), keys)
 
     def test_create_subscriber(self):
-        keys = [
-            'token', 'date_expiration', 'trial_active', 'date_created',
+        keys = set([
+            'token', 'active_until', 'trial_active', 'created_at',
             'active', 'lifetime', 'customer_id', 'date_changed',
-            'trial_elegible', 'plan'
-        ]
+            'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
+        ])
 
         subscriber = self.sclient.create_subscriber(1, 'test')
-        self.assertEquals(subscriber.keys(), keys)
+        self.assertEquals(set(subscriber.keys()), keys)
 
         # Delete subscriber
         self.sclient.delete_subscriber(1)
 
     def test_subscribe(self):
-        keys = [
-            'token', 'date_expiration', 'trial_active', 'date_created',
+        keys = set([
+            'token', 'active_until', 'trial_active', 'created_at',
             'active', 'lifetime', 'customer_id', 'date_changed',
-            'trial_elegible', 'plan'
-        ]
+            'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
+        ])
 
         # Create a subscriber first
         subscriber = self.sclient.create_subscriber(1, 'test')
 
         # Subscribe to a free trial
         subscription = self.sclient.subscribe(1, 1824, True)
-        self.assertEquals(subscriber.keys(), keys)
+        self.assertEquals(set(subscriber.keys()), keys)
         assert subscription['trial_active']
 
         # Delete subscriber
@@ -64,15 +64,30 @@ class  TestCase(unittest.TestCase):
         self.failUnlessEqual(self.sclient.delete_subscriber(1), 200)
 
     def test_get_info(self):
-        keys = [
-            'token', 'date_expiration', 'trial_active', 'date_created',
+        keys = set([
+            'token', 'active_until', 'trial_active', 'created_at',
             'active', 'lifetime', 'customer_id', 'date_changed',
-            'trial_elegible', 'plan'
-        ]
+            'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
+        ])
 
         self.sclient.create_subscriber(1, 'test')
         subscriber = self.sclient.get_info(1)
-        self.assertEquals(subscriber.keys(), keys)
+        self.assertEquals(set(subscriber.keys()), keys)
+        
+    def test_get_or_create(self):
+        keys = set([
+            'token', 'active_until', 'trial_active', 'created_at',
+            'active', 'lifetime', 'customer_id', 'date_changed',
+            'trial_elegible', 'plan', 'card_expires_before_next_auto_renew'
+        ])
+        #test non existent subscriber
+        result = self.sclient.get_or_create_subscriber(123, 'tester')
+        self.assertEquals(set(result.keys()), keys)
+        
+        #assure that we won't overwrite existing subscriber
+        result2 = self.sclient.get_or_create_subscriber(123, 'tester2')
+        self.assertEquals(result, result2)
+        
 
 if __name__ == '__main__':
     unittest.main()
