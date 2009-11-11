@@ -1,10 +1,21 @@
-import httplib, urllib2
+import httplib, urllib2, time, calendar
 from datetime import datetime
 from decimal import Decimal
 from xml.etree.ElementTree import fromstring
 from base64 import b64encode
 
 API_VERSION = 'v4'
+
+def utc_to_local(dt):
+    ''' Converts utc datetime to local'''
+    secs = calendar.timegm(dt.timetuple())
+    return datetime(*time.localtime(secs)[:6])
+    
+
+def str_to_datetime(s):
+    ''' Converts ISO 8601 string (2009-11-10T21:11Z) to LOCAL datetime'''
+    return utc_to_local(datetime.strptime(s, '%Y-%m-%dT%H:%M:%SZ'))
+
 
 class Client:
     def __init__(self, token, site_name):
@@ -64,12 +75,8 @@ class Client:
                 'speedly_id': int(plan.findtext('id')),
                 'speedly_site_id': int(plan.findtext('site-id')) \
                     if plan.findtext('site-id') else 0,
-                'created_at': datetime.strptime(
-                    plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
-                'date_changed': datetime.strptime(
-                    plan.findtext('updated-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
+                'created_at': str_to_datetime(plan.findtext('created-at')),
+                'date_changed': str_to_datetime(plan.findtext('updated-at')),
             }
             result.append(data)
         return result
@@ -114,15 +121,9 @@ class Client:
                 'token': plan.findtext('token'),
                 'name': plan.findtext('subscription-plan-name'),
                 'feature_level': plan.findtext('feature-level'),
-                'created_at': datetime.strptime(
-                    plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
-                'date_changed': datetime.strptime(
-                    plan.findtext('updated-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
-                'active_until': datetime.strptime(
-                    plan.findtext('active-until'), '%Y-%m-%dT%H:%M:%SZ'
-                ) if plan.findtext('active-until') else None,
+                'created_at': str_to_datetime(plan.findtext('created-at')),
+                'date_changed': str_to_datetime(plan.findtext('updated-at')),
+                'active_until': str_to_datetime(plan.findtext('active-until')) if plan.findtext('active-until') else None,
             }
             
             result.append(data)
@@ -178,15 +179,9 @@ class Client:
                 'token': plan.findtext('token'),
                 'name': plan.findtext('subscription-plan-name'),
                 'feature_level': plan.findtext('feature-level'),
-                'created_at': datetime.strptime(
-                    plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
-                'date_changed': datetime.strptime(
-                    plan.findtext('updated-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
-                'active_until': datetime.strptime(
-                    plan.findtext('active-until'), '%Y-%m-%dT%H:%M:%SZ'
-                ) if plan.findtext('active-until') else None,
+                'created_at': str_to_datetime(plan.findtext('created-at')),
+                'date_changed': str_to_datetime(plan.findtext('updated-at')),
+                'active_until': str_to_datetime(plan.findtext('active-until')) if plan.findtext('active-until') else None,
             }
             result.append(data)
         return result[0]
@@ -237,15 +232,9 @@ class Client:
                 'token': plan.findtext('token'),
                 'name': plan.findtext('subscription-plan-name'),
                 'feature_level': plan.findtext('feature-level'),
-                'created_at': datetime.strptime(
-                    plan.findtext('created-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
-                'date_changed': datetime.strptime(
-                    plan.findtext('updated-at'), '%Y-%m-%dT%H:%M:%SZ'
-                ),
-                'active_until': datetime.strptime(
-                    plan.findtext('active-until'), '%Y-%m-%dT%H:%M:%SZ'
-                ) if plan.findtext('active-until') else None,
+                'created_at': str_to_datetime(plan.findtext('created-at')),
+                'date_changed': str_to_datetime(plan.findtext('updated-at')),
+                'active_until': str_to_datetime(plan.findtext('active-until')) if plan.findtext('active-until') else None,
             }
             result.append(data)
         return result[0]
