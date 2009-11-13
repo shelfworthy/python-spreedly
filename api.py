@@ -2,6 +2,7 @@ import httplib, urllib2
 from datetime import datetime
 from decimal import Decimal
 from xml.etree.ElementTree import fromstring
+from xml.etree import ElementTree as ET
 from base64 import b64encode
 
 API_VERSION = 'v4'
@@ -13,6 +14,7 @@ class Client:
         self.base_path = '/api/%s/%s' % (API_VERSION, site_name)
         self.base_url = 'https://%s%s' % (self.base_host, self.base_path)
         self.url = None
+
     
     def get_response(self):
         return self.response
@@ -23,18 +25,25 @@ class Client:
     def set_url(self, url):
         self.url = '%s/%s' % (self.base_url, url)
     
-    def query(self, data=None):
+    def query(self, data=None, put=False):
+        opener = urllib2.build_opener(urllib2.HTTPHandler)
+        
         req = urllib2.Request(url=self.get_url())
         req.add_header('User-agent', 'python-spreedly 1.0')
         req.add_header('Authorization', 'Basic %s' % self.auth)
-        
+
+
         # Convert to POST if we got some data
         if data:
             req.add_header('Content-Type', 'application/xml')
             req.add_data(data)
+            
+        if put:
+            req.get_method = lambda: 'PUT'
         
-        f = urllib2.urlopen(req)
+        f = opener.open(req)
         self.response = f.read()
+
     
     def get_plans(self):
         self.set_url('subscription_plans.xml')
@@ -217,6 +226,8 @@ class Client:
         for plan in tree.getiterator('subscriber'):
             data = {
                 'customer_id': int(plan.findtext('customer-id')),
+                'email': plan.findtext('email'),
+                'screen_name': plan.findtext('screen-name'),
                 'first_name': plan.findtext('billing-first-name'),
                 'last_name': plan.findtext('billing-last-name'),
                 'active': True if plan.findtext('active') == 'true' else False,
@@ -250,6 +261,15 @@ class Client:
             result.append(data)
         return result[0]
         
+    def set_info(self, subscriber_id, **kw):
+        root = ET.Element('subscriber')
+        
+        for key, value in kw.items():
+            e = ET.SubElement(root, key)
+            e.text = value
+        
+        self.set_url('subscribers/%d.xml' % subscriber_id)
+        self.query(data=ET.tostring(root), put=True)
     
     def get_or_create_subscriber(self, subscriber_id, screen_name):
         try:

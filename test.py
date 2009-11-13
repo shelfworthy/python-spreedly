@@ -73,6 +73,15 @@ class  TestCase(unittest.TestCase):
         self.sclient.create_subscriber(1, 'test')
         subscriber = self.sclient.get_info(1)
         self.assertEquals(set(subscriber.keys()), keys)
+        self.assertEquals(subscriber['email'], '')
+        self.assertEquals(subscriber['screen_name'], 'test')
+        
+        
+        self.sclient.set_info(1, email='jack@bauer.com', screen_name='jb')
+        subscriber = self.sclient.get_info(1)
+        self.assertEquals(subscriber['email'], 'jack@bauer.com')
+        self.assertEquals(subscriber['screen_name'], 'jb')
+
         
     def test_get_or_create(self):
         keys = set([
