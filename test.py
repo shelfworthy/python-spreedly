@@ -97,6 +97,12 @@ class  TestCase(unittest.TestCase):
         result2 = self.sclient.get_or_create_subscriber(123, 'tester2')
         self.assertEquals(result, result2)
         
+        
+    def test_comp_subscription(self):
+        result = self.sclient.get_or_create_subscriber(123, 'tester')
+
+        self.sclient.create_complimentary_subscription(123, 2, 'months', 'Pro')
+        
 
 if __name__ == '__main__':
     unittest.main()

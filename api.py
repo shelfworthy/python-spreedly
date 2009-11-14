@@ -259,6 +259,18 @@ class Client:
         
         self.set_url('subscribers/%d.xml' % subscriber_id)
         self.query(data=ET.tostring(root), put=True)
+        
+        
+    def create_complimentary_subscription(self, subscriber_id, duration, duration_units, feature_level):
+        data = """<complimentary_subscription>
+            <duration_quantity>%s</duration_quantity>
+            <duration_units>%s</duration_units>
+            <feature_level>%s</feature_level>
+            </complimentary_subscription>""" % (duration, duration_units, feature_level)
+
+        self.set_url('subscribers/%s/complimentary_subscriptions.xml' % subscriber_id)
+        self.query(data)
+
     
     def get_or_create_subscriber(self, subscriber_id, screen_name):
         try:
