@@ -171,6 +171,7 @@ class Client:
                 'first_name': plan.findtext('billing-first-name'),
                 'last_name': plan.findtext('billing-last-name'),
                 'active': True if plan.findtext('active') == 'true' else False,
+                'gift': True if plan.findtext('on-gift') == 'true' else False,
                 'trial_active': \
                     True if plan.findtext('on-trial') == 'true' else False,
                 'trial_elegible': \
